@@ -1,33 +1,75 @@
 const newGameButton = document.querySelector(".play-game-button");
 
 newGameButton.addEventListener("click", createUser);
+let counter = 0;
 
 function createUser() {
-  //create modal for players to enter their name
-  let newModal = document.createElement("modal");
-  newModal.className = "modal";
-  //set screenContaienr to screenContainer Div
-  let screenContainer = document.querySelector(".screen-container");
-  screenContainer.style.backgroundColor = "rgb(0,0,0, .2";
-  //add new modal to screenContainer
-  screenContainer.appendChild(newModal);
-  //setting name div, lable, and input for player 1
-  let playerOneDiv = document.createElement("div");
-  playerOneDiv.className = "name-input-div";
-  let playerOneLabel = document.createElement("label");
-  playerOneLabel.textContent = "Player one name:";
-  let playerOneInput = document.createElement("input");
-  playerOneInput.type = "text";
-  playerOneInput.placeholder = "Ex: John Doe";
-  //setting name div, lable, and input for player 2
-  let playerTwoDiv = document.createElement("div");
-  playerTwoDiv.className = "name-input-div";
-  let playerTwoLabel = document.createElement("label");
-  playerTwoLabel.textContent = "Player two name:";
-  let playerTwoInput = document.createElement("input");
-  playerTwoInput.type = "text";
-  playerTwoInput.placeholder = "Ex: John Doe";
-  newModal.append(playerOneDiv, playerTwoDiv);
-  playerOneDiv.append(playerOneLabel, playerOneInput);
-  playerTwoDiv.append(playerTwoLabel, playerTwoInput);
+  if (counter === 0) {
+    // Create modal for players to enter their name
+    let newModal = Object.assign(document.createElement("div"), {
+      className: "new-players-container",
+    });
+    let addPlayerTitle = Object.assign(document.createElement("h1"), {
+      textContent: "Enter Player Information!",
+      className: "div-title",
+    });
+
+    // Set screenContainer properties
+    let screenContainer = document.querySelector(".screen-container");
+    screenContainer.style.backgroundColor = "rgba(0, 0, 0, 0.2)"; // Fixed color format
+
+    // Append newModal to screenContainer
+    screenContainer.appendChild(newModal);
+
+    // Player 1 Input
+    let playerOneDiv = Object.assign(document.createElement("div"), {
+      className: "name-input-div",
+    });
+    let playerOneLabel = Object.assign(document.createElement("p"), {
+      textContent: "Player one name:",
+    });
+    let playerOneInput = Object.assign(document.createElement("input"), {
+      type: "text",
+      placeholder: "Ex: John Doe",
+    });
+    playerOneDiv.append(playerOneLabel, playerOneInput);
+
+    // Player 2 Input
+    let playerTwoDiv = Object.assign(document.createElement("div"), {
+      className: "name-input-div",
+    });
+    let playerTwoLabel = Object.assign(document.createElement("p"), {
+      textContent: "Player two name:",
+    });
+    let playerTwoInput = Object.assign(document.createElement("input"), {
+      type: "text",
+      placeholder: "Ex: Jane Doe",
+    });
+    playerTwoDiv.append(playerTwoLabel, playerTwoInput);
+
+    // Play Button
+    let playButton = Object.assign(document.createElement("button"), {
+      textContent: "Play!",
+      className: "play-button",
+    });
+
+    // Append elements to modal
+    newModal.append(addPlayerTitle, playerOneDiv, playerTwoDiv, playButton);
+
+    // Increment counter
+    counter += 1;
+    playButton.addEventListener("click", () => {
+      newModal.remove();
+      counter -= 1;
+      return function players() {
+        let playerNames = {
+          player1: playerOneInput.value,
+          player2: playerTwoInput.value,
+        };
+        return playerNames;
+      };
+    });
+  }
+
+  return null;
 }
