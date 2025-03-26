@@ -1,10 +1,21 @@
 const newGameButton = document.querySelector(".play-game-button");
+let screenContainer = document.querySelector(".screen-container");
 
 newGameButton.addEventListener("click", createUser);
 let counter = 0;
+let playerNamesArray = [];
+function Player(player1, player2) {
+  this.player1 = player1;
+  this.player2 = player2;
+}
 
 function createUser() {
-  if (counter === 0) {
+  newGameButton.textContent = "Play Game!";
+  playerNamesArray = [];
+  console.log(newGameButton.textContent);
+  console.log(counter);
+
+  if (counter === 0 && newGameButton.textContent == "Play Game!") {
     // Create modal for players to enter their name
     let newModal = Object.assign(document.createElement("div"), {
       className: "new-players-container",
@@ -15,7 +26,6 @@ function createUser() {
     });
 
     // Set screenContainer properties
-    let screenContainer = document.querySelector(".screen-container");
     screenContainer.style.backgroundColor = "rgba(0, 0, 0, 0.2)"; // Fixed color format
 
     // Append newModal to screenContainer
@@ -31,6 +41,7 @@ function createUser() {
     let playerOneInput = Object.assign(document.createElement("input"), {
       type: "text",
       placeholder: "Ex: John Doe",
+      className: "player-one-input",
     });
     playerOneDiv.append(playerOneLabel, playerOneInput);
 
@@ -44,6 +55,7 @@ function createUser() {
     let playerTwoInput = Object.assign(document.createElement("input"), {
       type: "text",
       placeholder: "Ex: Jane Doe",
+      className: "player-two-input",
     });
     playerTwoDiv.append(playerTwoLabel, playerTwoInput);
 
@@ -59,17 +71,34 @@ function createUser() {
     // Increment counter
     counter += 1;
     playButton.addEventListener("click", () => {
+      updatePlayers();
       newModal.remove();
-      counter -= 1;
-      return function players() {
-        let playerNames = {
-          player1: playerOneInput.value,
-          player2: playerTwoInput.value,
-        };
-        return playerNames;
-      };
     });
+  } else {
+    console.log("this isnt working");
   }
+}
 
-  return null;
+function updatePlayers() {
+  counter -= 1;
+  let player1Input = document.querySelector(".player-one-input");
+  let player2Input = document.querySelector(".player-two-input");
+  console.log(player1Input.value);
+  console.log(player2Input.value);
+  let playerNames = new Player(player1Input.value, player2Input.value);
+  playerNamesArray.push(playerNames);
+  console.log(playerNamesArray);
+  screenContainer.style.backgroundColor = "white";
+  newGameButton.textContent = "New Game";
+  let player1Text = document.querySelector(".player1-p");
+  let player2Text = document.querySelector(".player2-p");
+  player1Text.textContent = `${playerNamesArray[0].player1}: 0`;
+  player2Text.textContent = `${playerNamesArray[0].player2}: 0`;
+}
+
+function playNewGame() {
+  if (newGameButton.textContent == "New Game" && counter === 0) {
+    newGameButton.textContent = "Play Game!";
+    createUser();
+  }
 }
