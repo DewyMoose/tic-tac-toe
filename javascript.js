@@ -71,7 +71,7 @@ function createUser() {
     // Increment counter
     counter += 1;
     playButton.addEventListener("click", () => {
-      updatePlayers();
+      updatePlayers(playerOneInput.value, playerTwoInput.value);
       newModal.remove();
     });
   } else {
@@ -79,13 +79,9 @@ function createUser() {
   }
 }
 
-function updatePlayers() {
+function updatePlayers(player1, player2) {
   counter -= 1;
-  let player1Input = document.querySelector(".player-one-input");
-  let player2Input = document.querySelector(".player-two-input");
-  console.log(player1Input.value);
-  console.log(player2Input.value);
-  let playerNames = new Player(player1Input.value, player2Input.value);
+  let playerNames = new Player(player1, player2);
   playerNamesArray.push(playerNames);
   console.log(playerNamesArray);
   screenContainer.style.backgroundColor = "white";
@@ -94,6 +90,13 @@ function updatePlayers() {
   let player2Text = document.querySelector(".player2-p");
   player1Text.textContent = `${playerNamesArray[0].player1}: 0`;
   player2Text.textContent = `${playerNamesArray[0].player2}: 0`;
+  let turn = 0;
+  let gameDivs = document.querySelectorAll(".game-div");
+
+  gameDivs.forEach((div) => {
+    div.textContent = "";
+  });
+  assignPlayerRole(player1, player2, gameDivs, turn);
 }
 
 function playNewGame() {
@@ -101,4 +104,26 @@ function playNewGame() {
     newGameButton.textContent = "Play Game!";
     createUser();
   }
+}
+
+//function for doing something with clicking shit that will make an X or an O
+
+function assignPlayerRole(player1, player2, gameDivs, turn) {
+  let playerTurn = document.querySelector(".game-turn");
+  playerTurn.textContent = `Player Turn: ${player1}`;
+  gameDivs.forEach((div) => {
+    div.addEventListener("click", () => {
+      if (turn == 0 && div.textContent == "") {
+        playerTurn.textContent = `Player Turn: ${player2}`;
+        div.textContent = "X";
+        div.style.color = "var(--playerOneColor)";
+        turn = 1;
+      } else if (turn == 1 && div.textContent == "") {
+        playerTurn.textContent = `Player Turn: ${player1}`;
+        div.textContent = "O";
+        div.style.color = "var(--playerTwoColor)";
+        turn = 0;
+      }
+    });
+  });
 }

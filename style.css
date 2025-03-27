@@ -81,6 +81,10 @@ nav {
   height: 200px;
   width: 200px;
   outline: 1px solid red;
+  font-size: 12rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .new-players-container {
