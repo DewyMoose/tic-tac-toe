@@ -6,6 +6,7 @@ let player1Text = document.querySelector(".player1-p");
 let player2Text = document.querySelector(".player2-p");
 let GameCountP = document.querySelector(".game-count");
 let gameCountNum = 0;
+let divElements = [];
 
 newGameButton.addEventListener("click", createUser);
 let counter = 0;
@@ -18,7 +19,6 @@ function Player(player1, player2) {
 
 function createUser() {
   newGameButton.textContent = "Play Game!";
-  playerNamesArray = [];
 
   if (counter === 0 && newGameButton.textContent == "Play Game!") {
     // Create modal for players to enter their name
@@ -95,7 +95,7 @@ function updatePlayers(player1, player2) {
   let gameDivs = document.querySelectorAll(".game-div");
 
   gameDivs.forEach((div) => {
-    div.textContent = "";
+    div.style.pointerEvents = "auto";
   });
   assignPlayerRole(player1, player2, gameDivs, turn);
 }
@@ -108,7 +108,6 @@ function playNewGame() {
 }
 function assignPlayerRole(player1, player2, gameDivs, turn) {
   let playerTurn = document.querySelector(".game-turn");
-  let divElements = [];
   for (let i = 0; i < 9; i++) {
     divElements.push({ id: gameDivs[i].textContent });
   }
@@ -159,7 +158,8 @@ function checkScore(divElements, playerTurn, player1, player2) {
       gameCountNum += 1;
       player1Text.textContent = `${player1} Score: ${playerOneScore}`;
       GameCountP.textContent = `Game Count: ${gameCountNum}`;
-      break;
+      resetVariables();
+      return;
     } else if (
       divElements[a].id === "O" &&
       divElements[b].id === "O" &&
@@ -170,7 +170,24 @@ function checkScore(divElements, playerTurn, player1, player2) {
       gameCountNum += 1;
       player2Text.textContent = `${player2} Score: ${playerTwoScore}`;
       GameCountP.textContent = `Game Count: ${gameCountNum}`;
-      break;
+      resetVariables();
+      return;
     }
   }
+}
+
+function resetVariables() {
+  divElements = [];
+  let divs = document.querySelectorAll(".game-div");
+
+  divs.forEach((div) => {
+    div.textContent = "";
+    div.style.pointerEvents = "none";
+  });
+
+  player1Text.textContent = `${playerNamesArray[0].player1} Score: ${playerOneScore}`;
+  player2Text.textContent = `${playerNamesArray[0].player2} Score: ${playerTwoScore}`;
+  GameCountP.textContent = `Game Count: ${gameCountNum}`;
+  playerNamesArray = [];
+  counter = 0;
 }
