@@ -7,6 +7,10 @@ let player2Text = document.querySelector(".player2-p");
 let GameCountP = document.querySelector(".game-count");
 let gameCountNum = 0;
 let divElements = [];
+let gameDivs = document.querySelectorAll(".game-div");
+let winLoss = 0;
+let isGameLocked = false;
+let winner = "";
 
 newGameButton.addEventListener("click", createUser);
 let counter = 0;
@@ -18,6 +22,11 @@ function Player(player1, player2) {
 }
 
 function createUser() {
+  isGameLocked = false;
+  gameDivs.forEach((div) => {
+    div.textContent = "";
+    div.style.pointerEvents = "none";
+  });
   newGameButton.textContent = "Play Game!";
 
   if (counter === 0 && newGameButton.textContent == "Play Game!") {
@@ -92,49 +101,44 @@ function updatePlayers(player1, player2) {
   player1Text.textContent = `${playerNamesArray[0].player1}: 0`;
   player2Text.textContent = `${playerNamesArray[0].player2}: 0`;
   let turn = 0;
-  let gameDivs = document.querySelectorAll(".game-div");
 
   gameDivs.forEach((div) => {
     div.style.pointerEvents = "auto";
   });
-  assignPlayerRole(player1, player2, gameDivs, turn);
+  assignPlayerRole(player1, player2, turn);
 }
-
-function playNewGame() {
-  if (newGameButton.textContent == "New Game" && counter === 0) {
-    newGameButton.textContent = "Play Game!";
-    createUser();
-  }
-}
-function assignPlayerRole(player1, player2, gameDivs, turn) {
+function assignPlayerRole(player1, player2, turn) {
   let playerTurn = document.querySelector(".game-turn");
-  for (let i = 0; i < 9; i++) {
-    divElements.push({ id: gameDivs[i].textContent });
+  if (divElements.length === 0) {
+    for (let i = 0; i < 9; i++) {
+      divElements.push({ id: gameDivs[i].textContent });
+    }
   }
   playerTurn.textContent = `Player Turn: ${player1}`;
   gameDivs.forEach((div, index) => {
     div.addEventListener("click", () => {
-      if (turn == 0 && div.textContent == "") {
+      if (turn == 0 && div.textContent == "" && isGameLocked == false) {
         playerTurn.textContent = `Player Turn: ${player2}`;
         player1Text.textContent = `${player1} Score: ${playerOneScore}`;
         div.textContent = "X";
         div.style.color = "var(--playerOneColor)";
-        divElements[index].id = div.textContent;
+        divElements[index].id = "X";
         turn = 1;
         checkScore(divElements, playerTurn, player1, player2);
-      } else if (turn == 1 && div.textContent == "") {
+      } else if (turn == 1 && div.textContent == "" && isGameLocked == false) {
         playerTurn.textContent = `Player Turn: ${player1}`;
         player2Text.textContent = `${player2} Score: ${playerTwoScore}`;
         div.textContent = "O";
         div.style.color = "var(--playerTwoColor)";
+        divElements[index].id = "O";
         turn = 0;
-        checkScore(divElements, playerTurn, player1, player2);
+        checkScore(playerTurn, player1, player2);
       }
     });
   });
 }
 
-function checkScore(divElements, playerTurn, player1, player2) {
+function checkScore(playerTurn, player1, player2) {
   const winningCombos = [
     [0, 1, 2],
     [3, 4, 5],
@@ -153,41 +157,43 @@ function checkScore(divElements, playerTurn, player1, player2) {
       divElements[b].id === "X" &&
       divElements[c].id === "X"
     ) {
-      playerTurn.textContent = `${player1} Wins!`;
+      winner = "player 2";
       playerOneScore += 1;
       gameCountNum += 1;
       player1Text.textContent = `${player1} Score: ${playerOneScore}`;
       GameCountP.textContent = `Game Count: ${gameCountNum}`;
-      resetVariables();
-      return;
+      resetVariables(playerTurn, player1, player2);
     } else if (
       divElements[a].id === "O" &&
       divElements[b].id === "O" &&
       divElements[c].id === "O"
     ) {
-      playerTurn.textContent = `${player2} Wins!`;
+      winner = "player 2";
       playerTwoScore += 1;
       gameCountNum += 1;
       player2Text.textContent = `${player2} Score: ${playerTwoScore}`;
       GameCountP.textContent = `Game Count: ${gameCountNum}`;
-      resetVariables();
-      return;
+      resetVariables(playerTurn, player1, player2);
     }
   }
 }
 
-function resetVariables() {
-  divElements = [];
-  let divs = document.querySelectorAll(".game-div");
-
-  divs.forEach((div) => {
+function resetVariables(playerTurn, player1, player2) {
+  gameDivs.forEach((div, index) => {
     div.textContent = "";
+    divElements[index].id = "";
     div.style.pointerEvents = "none";
   });
+  if (winner == "player 2") {
+    playerTurn.textContent = `${player1} Wins!`;
+  } else if (winner == "player 2") {
+    playerTurn.textContent = `${player2} Wins!`;
+  }
 
   player1Text.textContent = `${playerNamesArray[0].player1} Score: ${playerOneScore}`;
   player2Text.textContent = `${playerNamesArray[0].player2} Score: ${playerTwoScore}`;
   GameCountP.textContent = `Game Count: ${gameCountNum}`;
   playerNamesArray = [];
   counter = 0;
+  isGameLocked = true;
 }
