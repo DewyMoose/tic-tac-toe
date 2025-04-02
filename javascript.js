@@ -10,8 +10,8 @@ let divElements = [];
 let gameDivs = document.querySelectorAll(".game-div");
 let winLoss = 0;
 let isGameLocked = false;
-let winner = "";
-
+let playerTurn = document.querySelector(".game-turn");
+let turn = 0;
 newGameButton.addEventListener("click", createUser);
 let counter = 0;
 let playerNamesArray = [];
@@ -100,7 +100,7 @@ function updatePlayers(player1, player2) {
   newGameButton.textContent = "New Game";
   player1Text.textContent = `${playerNamesArray[0].player1}: 0`;
   player2Text.textContent = `${playerNamesArray[0].player2}: 0`;
-  let turn = 0;
+  playerTurn.textContent = `Player Turn: ${player1}`;
 
   gameDivs.forEach((div) => {
     div.style.pointerEvents = "auto";
@@ -108,15 +108,15 @@ function updatePlayers(player1, player2) {
   assignPlayerRole(player1, player2, turn);
 }
 function assignPlayerRole(player1, player2, turn) {
-  let playerTurn = document.querySelector(".game-turn");
   if (divElements.length === 0) {
     for (let i = 0; i < 9; i++) {
       divElements.push({ id: gameDivs[i].textContent });
     }
   }
-  playerTurn.textContent = `Player Turn: ${player1}`;
+
   gameDivs.forEach((div, index) => {
     div.addEventListener("click", () => {
+      console.log(turn);
       if (turn == 0 && div.textContent == "" && isGameLocked == false) {
         playerTurn.textContent = `Player Turn: ${player2}`;
         player1Text.textContent = `${player1} Score: ${playerOneScore}`;
@@ -124,7 +124,7 @@ function assignPlayerRole(player1, player2, turn) {
         div.style.color = "var(--playerOneColor)";
         divElements[index].id = "X";
         turn = 1;
-        checkScore(divElements, playerTurn, player1, player2);
+        checkScore(playerTurn, player1, player2);
       } else if (turn == 1 && div.textContent == "" && isGameLocked == false) {
         playerTurn.textContent = `Player Turn: ${player1}`;
         player2Text.textContent = `${player2} Score: ${playerTwoScore}`;
@@ -133,6 +133,8 @@ function assignPlayerRole(player1, player2, turn) {
         divElements[index].id = "O";
         turn = 0;
         checkScore(playerTurn, player1, player2);
+      } else {
+        return;
       }
     });
   });
@@ -157,38 +159,35 @@ function checkScore(playerTurn, player1, player2) {
       divElements[b].id === "X" &&
       divElements[c].id === "X"
     ) {
-      winner = "player 2";
+      isGameLocked = true;
       playerOneScore += 1;
       gameCountNum += 1;
       player1Text.textContent = `${player1} Score: ${playerOneScore}`;
       GameCountP.textContent = `Game Count: ${gameCountNum}`;
-      resetVariables(playerTurn, player1, player2);
+      playerTurn.textContent = `${player1} Wins!`;
+      resetVariables();
     } else if (
       divElements[a].id === "O" &&
       divElements[b].id === "O" &&
       divElements[c].id === "O"
     ) {
-      winner = "player 2";
       playerTwoScore += 1;
       gameCountNum += 1;
+      isGameLocked = true;
+      playerTurn.textContent = `${player2} Wins!`;
       player2Text.textContent = `${player2} Score: ${playerTwoScore}`;
       GameCountP.textContent = `Game Count: ${gameCountNum}`;
-      resetVariables(playerTurn, player1, player2);
+      resetVariables();
     }
   }
 }
 
-function resetVariables(playerTurn, player1, player2) {
+function resetVariables() {
   gameDivs.forEach((div, index) => {
     div.textContent = "";
     divElements[index].id = "";
     div.style.pointerEvents = "none";
   });
-  if (winner == "player 2") {
-    playerTurn.textContent = `${player1} Wins!`;
-  } else if (winner == "player 2") {
-    playerTurn.textContent = `${player2} Wins!`;
-  }
 
   player1Text.textContent = `${playerNamesArray[0].player1} Score: ${playerOneScore}`;
   player2Text.textContent = `${playerNamesArray[0].player2} Score: ${playerTwoScore}`;
@@ -196,4 +195,5 @@ function resetVariables(playerTurn, player1, player2) {
   playerNamesArray = [];
   counter = 0;
   isGameLocked = true;
+  turn = 0;
 }
