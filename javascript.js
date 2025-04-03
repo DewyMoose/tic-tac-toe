@@ -98,16 +98,16 @@ function updatePlayers(player1, player2) {
   playerNamesArray.push(playerNames);
   screenContainer.style.backgroundColor = "white";
   newGameButton.textContent = "New Game";
-  player1Text.textContent = `${playerNamesArray[0].player1}: 0`;
-  player2Text.textContent = `${playerNamesArray[0].player2}: 0`;
+  player1Text.textContent = `${playerNamesArray[0].player1} Score: ${playerOneScore}`;
+  player2Text.textContent = `${playerNamesArray[0].player2} Score: ${playerTwoScore}`;
   playerTurn.textContent = `Player Turn: ${player1}`;
 
   gameDivs.forEach((div) => {
     div.style.pointerEvents = "auto";
   });
-  assignPlayerRole(player1, player2, turn);
+  assignPlayerRole(player1, player2);
 }
-function assignPlayerRole(player1, player2, turn) {
+function assignPlayerRole(player1, player2) {
   if (divElements.length === 0) {
     for (let i = 0; i < 9; i++) {
       divElements.push({ id: gameDivs[i].textContent });
@@ -119,7 +119,7 @@ function assignPlayerRole(player1, player2, turn) {
       console.log(turn);
       if (turn == 0 && div.textContent == "" && isGameLocked == false) {
         playerTurn.textContent = `Player Turn: ${player2}`;
-        player1Text.textContent = `${player1} Score: ${playerOneScore}`;
+        player1Text.textContent = `${playerNamesArray[0].player1} Score: ${playerOneScore}`;
         div.textContent = "X";
         div.style.color = "var(--playerOneColor)";
         divElements[index].id = "X";
@@ -127,7 +127,7 @@ function assignPlayerRole(player1, player2, turn) {
         checkScore(playerTurn, player1, player2);
       } else if (turn == 1 && div.textContent == "" && isGameLocked == false) {
         playerTurn.textContent = `Player Turn: ${player1}`;
-        player2Text.textContent = `${player2} Score: ${playerTwoScore}`;
+        player2Text.textContent = `${playerNamesArray[0].player2} Score: ${playerTwoScore}`;
         div.textContent = "O";
         div.style.color = "var(--playerTwoColor)";
         divElements[index].id = "O";
@@ -162,7 +162,7 @@ function checkScore(playerTurn, player1, player2) {
       isGameLocked = true;
       playerOneScore += 1;
       gameCountNum += 1;
-      player1Text.textContent = `${player1} Score: ${playerOneScore}`;
+      player1Text.textContent = `${playerNamesArray[0].player1} Score: ${playerOneScore}`;
       GameCountP.textContent = `Game Count: ${gameCountNum}`;
       playerTurn.textContent = `${player1} Wins!`;
       resetVariables();
@@ -175,7 +175,7 @@ function checkScore(playerTurn, player1, player2) {
       gameCountNum += 1;
       isGameLocked = true;
       playerTurn.textContent = `${player2} Wins!`;
-      player2Text.textContent = `${player2} Score: ${playerTwoScore}`;
+      player2Text.textContent = `${playerNamesArray[0].player2} Score: ${playerTwoScore}`;
       GameCountP.textContent = `Game Count: ${gameCountNum}`;
       resetVariables();
     }
